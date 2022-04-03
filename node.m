@@ -1,23 +1,36 @@
-classdef node
+classdef node < handle
     %NODE Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
-        Property1
+        id
+        line_in % родительская линия
+        line_out % дочерняя линия
+        I
+        U
+        sigma
+        load
+        
     end
     
     methods
-        function obj = node(inputArg1,inputArg2)
-            %NODE Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
+        % конструктор
+        function obj = node(id, line_in, line_out, I, U, sigma, load)
+            %==============================================================
+            % id -- integer 
+            % line_in --
+            % I, U
+            %==============================================================
+            obj.id = id;
+            obj.line_in = line_in; 
+            obj.line_out = line_out; 
+            obj.I = I;
+            obj.U = U;
+            obj.sigma = sigma;
+            obj.load = load;
+
         end
-        
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
-        end
+
     end
 end
 
