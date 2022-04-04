@@ -7,8 +7,8 @@ classdef line < handle
     properties 
         %Определение свойств класса line
         
-        node_in; %Родительский узел
-        node_out; %Дочерний узел
+        node_in;  % Father узел
+        node_out; % Дочерний узел
         W; %Матрица W 6*6
         L; %Длина линии
         I_in; %Ток на входном узле

@@ -6,12 +6,12 @@ classdef grid < handle
         eds_src = ones(3, 1)
         z_src = ones(3, 3)
         src_id = 1
-        node_list
-        line_list
+        node_list = []
+        line_list = []
     end
     
     methods
-        % конструктор
+        % conctuctor 
         function obj = grid(src_id, varargin)
             % ===================================================
             % src_id  -- str, source node id 
@@ -19,12 +19,12 @@ classdef grid < handle
             % z_src   -- complex array (3, 3)
             % ===================================================
             
-            % задаем параметры источника, если нужно
+            % init source, if need 
             if (numel(varargin) >= 1) && ~isempty(varargin{1})
-               % проверка на размерность
+               % dim check
                obj.eds_src = eds_src;
                if ~isempty(varargin{2})
-                   % проверка на размерность
+                   % dim check 
                    obj.z_src = z_src;
                end
             else
@@ -32,24 +32,30 @@ classdef grid < handle
                 obj.z_src = z_src;
             end
             
-            % созадем узел, который соответсвует источнику
-            add_node(obj, obj.src_id)
-            
+            % create source node 
             obj.src_id = src_id;
+            obj.node_list{end+1} = node(obj.src_id);
+            
         end
         
         
-        % добавление узла
+        % adding node
         function add_node(this, node_id, varargin)
             % ===================================================
             % node_name -- str, unique node name 
             % 
             % ===================================================
             
+            % check uniq node_id 
+            if ~any(cellfun(@(x) strcmp(x.node_id, node_id), this.node_list))
+               this.node_list{end+1} = node(this.node_id);
+            else
+                error('Your node_id not unique')
+            end
         end
         
         
-        % добавление линии
+        % adding line
         function add_line(this, line_id, node_in_id, node_out_id, varargin) 
             % ===================================================
             % line_name -- str, unique line name 
@@ -57,6 +63,20 @@ classdef grid < handle
             % node_out  -- str, unique node name out
             % ===================================================
             
+            % check if exist  node_in_id and node_out_id
+            if any(cellfun(@(x) strcmp(x.node_id, node_in_id), this.node_list)) && ...
+                   any(cellfun(@(x) strcmp(x.node_id, node_out_id), this.node_list)) 
+               
+                % check uniq line_id 
+                if ~any(cellfun(@(x) strcmp(x.line_id, line_id), this.line_list))
+                   this.line_list{end+1} = line(this.node_id);
+                else
+                    error('Your node_id not unique')
+                end
+                
+            else
+                error('Your node_in_id, node_out_id not exist')
+            end
         end
         
         
