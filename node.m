@@ -24,33 +24,33 @@ classdef node < handle
             % load -- Matrix (3,3)
             %==============================================================
             obj.id = id;
-            if (obj(varargin) <= 1) && ~isempty(obj(varargin{1}))
-                obj.line_in = obj(varargin{1}); 
+            if (obj(varargin) <= 1) && ~isempty(varargin{1})
+                obj.line_in = varargin{1}; 
             end
 
-            if (obj(varargin) <= 1) && ~isempty(obj(varargin{2}))
-                obj.line_out = obj(varargin{2}); 
+            if (obj(varargin) <= 1) && ~isempty(varargin{2})
+                obj.line_out = varargin{2}; 
             end
 
-            if (obj(varargin) <= 1) && ~isempty(obj(varargin{4}))
-                obj.I = obj(varargin{4}); 
+            if (obj(varargin) <= 1) && ~isempty(varargin{4})
+                obj.I = varargin{4}; 
             end
 
-            if (obj(varargin) <= 1) && ~isempty(obj(varargin{5}))
-                obj.I = obj(varargin{5}); 
+            if (obj(varargin) <= 1) && ~isempty(varargin{5})
+                obj.I = varargin{5}; 
             end
 
-            if (obj(varargin) <= 1) && ~isempty(obj(varargin{6}))
-                obj.U = obj(varargin{6}); 
+            if (obj(varargin) <= 1) && ~isempty(varargin{6})
+                obj.U = varargin{6}; 
             end
             
-            if (obj(varargin) <= 1) && ~isempty(obj(varargin{7}))
-                obj.sigma = obj(varargin{7}); 
+            if (obj(varargin) <= 1) && ~isempty(varargin{7})
+                obj.sigma = varargin{7}; 
             end
             
  
             if (obj(varargin) <= 1) && ~isempty(obj(varargin{8}))
-                obj.load = obj(varargin{8}); 
+                obj.load = varargin{8}; 
             end
 
 
