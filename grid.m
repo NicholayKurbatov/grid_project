@@ -64,24 +64,34 @@ classdef grid < handle
             % node_out  -- str, unique node name out
             % ===================================================
             
+            % check uniq line_id 
+            if any(cellfun(@(x) strcmp(x.line_id, line_id), this.line_list))
+                error('Your node_id not unique')
+            end
+            
             % check if exist  node_in_id and node_out_id
-            if any(cellfun(@(x) strcmp(x.node_id, node_in_id), this.node_list)) && ...
-                   any(cellfun(@(x) strcmp(x.node_id, node_out_id), this.node_list)) 
-               
-                % check uniq line_id 
-                if any(cellfun(@(x) strcmp(x.line_id, line_id), this.line_list))
-                    error('Your node_id not unique')
-                end
-                
-                this.line_list{end+1} = line(this.node_id);
-               
-                
-            else
+            if ~any(cellfun(@(x) strcmp(x.node_id, node_in_id), this.node_list))
+                error('Your node_in_id, node_out_id not exist')
+            
+            elseif ~any(cellfun(@(x) strcmp(x.node_id, node_out_id), this.node_list)) 
                 error('Your node_in_id, node_out_id not exist')
             end
+           
+            this.line_list{end+1} = line(this.node_id);
+
         end
         
         
+        % find node by node_id
+        function p_node = find_node(this, node_id)
+            mask = cellfun(@(x) strcmp(x.node_id, node_id), this.node_list);
+            need_idx = find(mask == 1);
+            if need_idx
+                p_node = this.node_list{need_idx};
+            else
+                p_node = [];
+            end
+        end
         
     end
     
