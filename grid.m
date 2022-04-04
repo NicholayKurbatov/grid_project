@@ -86,10 +86,10 @@ classdef grid < handle
         function p_node = find_node(this, node_id)
             mask = cellfun(@(x) strcmp(x.node_id, node_id), this.node_list);
             need_idx = find(mask == 1);
-            if need_idx
-                p_node = this.node_list{need_idx};
-            else
+            if isempty(need_idx)
                 p_node = [];
+            else
+                p_node = this.node_list{need_idx};
             end
         end
         
