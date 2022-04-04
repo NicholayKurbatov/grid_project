@@ -47,6 +47,7 @@ classdef node < handle
             if (obj(varargin) <= 1) && ~isempty(obj(varargin{7}))
                 obj.sigma = obj(varargin{7}); 
             end
+            
  
             if (obj(varargin) <= 1) && ~isempty(obj(varargin{8}))
                 obj.load = obj(varargin{8}); 
