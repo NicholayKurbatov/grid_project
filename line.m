@@ -1,18 +1,18 @@
-classdef line < handle
+classdef Line < handle
    
     %==================================PROPERTIES==============================================
     
     properties 
         %Defining properties of the line class
         
-        node_in; %Parent node
-        node_out; %Child node
-        W; %Matrix W 6*6
-        L; %Line length
-        I_in; %Current at the input node
-        U_in; %Voltage at the input node
-        sigma_in; %Matrix of input conductivities
-        ID; %Node ID
+        node_in = []; %Parent node
+        node_out = {}; %Child node
+        W = zeros(6, 6); %Matrix W 6*6
+        L = 1; %Line length
+        I_in = zeros(3, 1); %Current at the input node
+        U_in = zeros(3, 1); %Voltage at the input node
+        sigma_in = zeros(3, 3); %Matrix of input conductivities
+        id; %Node id
         
      
     end
@@ -22,7 +22,7 @@ classdef line < handle
     methods 
         %Defining methods of the line class
          
-        function obj = Line(ID,node_in,node_out,varargin)
+        function obj = Line(id,node_in,node_out,varargin)
             
    %============================================================================================
             % id -- integer 
@@ -33,29 +33,36 @@ classdef line < handle
             % W--Matrix W 6*6
   %==============================================================================
             
-        %Class constructor
-        if (nargin>0)
-            obj.ID = ID;
+            %Class constructor
+            obj.id = id;
             obj.node_in = node_in;
             obj.node_out = node_out;
-            obj.L = L;
-            obj.W = W;
-            
-            if (obj(varargin) <= 1) && ~isempty(varargin{1})
+    % 
+    %       obj.L = L;
+    %       obj.W = W;
+                
+            if (numel(varargin) >= 1) && ~isempty(varargin{1})
                 obj.U_in = varargin{1}; 
+                
+                validateattributes(obj.U_in,{'double'},{'size',[3,1]});
+            end
+       
+            if (numel(varargin) >= 2) && ~isempty(varargin{2})
+                obj.I_in = varargin{2}; 
+                
+                validateattributes(obj.I_in,{'double'},{'size',[3,1]});
             end
             
-            if (obj(varargin) <= 1) && ~isempty(varargin{1})
-                obj.I_in = varargin{1}; 
-            end
-            
-             if (obj(varargin) <= 1) && ~isempty(varargin{1})
-                obj.sigma_in = varargin{1}; 
-            end
+             if (numel(varargin) >= 3) && ~isempty(varargin{3})
+                obj.sigma_in = varargin{3}; 
+                
+                classes = {'double'};
+                attributes = {'size',[3,3]};
+                validateattributes(obj.sigma_in ,classes,attributes);
+             end
 
         end
-        
-        end
+
     end
     
 end
