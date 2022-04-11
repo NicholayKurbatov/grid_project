@@ -77,7 +77,7 @@ classdef grid < handle
                 error('Your node_in_id, node_out_id not exist')
             end
            
-            this.line_list{end+1} = line(this.node_id);
+            this.line_list{end+1} = line(this.node_id, );
 
         end
         
