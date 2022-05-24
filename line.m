@@ -20,7 +20,7 @@ classdef line < handle
         %Defining methods of the line class
         
         % conctuctor 
-        function obj = line(id,node_in,node_out,varargin)
+        function obj = line(id, node_in, node_out, varargin)
             % ===============================
             % id -- integer 
             % node_in, node_out -- 
@@ -51,43 +51,43 @@ classdef line < handle
             if (numel(varargin) >= 4) && ~isempty(varargin{4})
                 obj.I_in = varargin{4}; 
                 
-                validateattributes(obj.I_in,{'double'},{'size',[3,1]});
+%                 validateattributes(obj.I_in,{'double'},{'size',[3,1]});
             end
             
              if (numel(varargin) >= 5) && ~isempty(varargin{5})
                 obj.sigma_in = varargin{5}; 
                 
-                classes = {'double'};
-                attributes = {'size',[3,3]};
-                validateattributes(obj.sigma_in ,classes,attributes);
+%                 classes = {'double'};
+%                 attributes = {'size',[3,3]};
+%                 validateattributes(obj.sigma_in ,classes,attributes);
              end
         end
         
 
         % calculate cumalative sigma 
         function calcSigma(this)
-            %get node out sigma
+            % get node out sigma
             this.node_out.calcSigma();
             sigma = this.node_out.sigma;
             E = -1*eye(3);
-            AB = [sigma, E] * expm(this.W*this.L);
+            AB = [sigma, E] * expm(-this.W * this.L);
             A = AB(:,1:3);
             B = AB(:,4:end);
-            sigma0 = -1 * inv(B)*A;
-            %assign sigma value
+            sigma0 = -1 * B^(-1) * A;
+            % assign sigma value
             this.sigma_in = sigma0;
         end
 
 
         % calculate phasors along the grid
         function calcPhasors(this)     
-            sigma_end = this.node_out.sigma;
-            IU_in = [this.U_in ; sigma_end * this.U_in ];
-            IU_end = expm(-this.W*this.L) * IU_in;
+%             sigma_end = this.node_out.sigma;
+            IU_in = [this.U_in; this.I_in];
+            IU_end = expm(-this.L * this.W) * IU_in;
             U_end = IU_end(1:3);
             I_end = IU_end(4:end);
             
-            %assign U and I value
+            % assign U and I value
             this.node_out.U = U_end;
             this.node_out.I = I_end;
             

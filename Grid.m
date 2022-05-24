@@ -6,7 +6,7 @@ classdef Grid < handle
     properties
         eds_src = ones(3, 1)
         z_src = ones(3, 3)
-        src_id = '1'
+        src_id = ''
         obj_node_src = {}
         nodes = {}
         lines = {}
@@ -31,13 +31,12 @@ classdef Grid < handle
             % ===================================================
 
             % 
-            this.eds_src = ones(3, 1) * src_EMF;
+            this.eds_src = src_EMF * [1; exp(2i*pi/3); exp(4i*pi/3)];
             this.z_src = src_Zn*ones(3) + src_Z0*eye(3);
 
             % find source node 
             this.src_id = src_id;
             this.obj_node_src = this.find_node(src_id);
-            this.nodes{end+1} = this.obj_node_src;
         end
         
         
@@ -80,10 +79,11 @@ classdef Grid < handle
            
             elseif isempty(out_node)
                 error('Your node_out_id not exist')
+
             end
            
             % create temp line obj
-            temp_line = line(line_id, in_node, out_node);
+            temp_line = line(line_id, in_node, out_node, varargin{:});
             this.lines{end+1} = temp_line;
             
             % add line in grid 
@@ -130,7 +130,7 @@ classdef Grid < handle
             % get phasors in source
             sigma0 = srcNode.sigma;
             U0 = inv(eye(3,3) + this.z_src*sigma0) * this.eds_src;
-            I0 = sigma0*U0;
+            I0 = sigma0 * U0;
             srcNode.I = I0;
             srcNode.U = U0;
 
@@ -138,6 +138,61 @@ classdef Grid < handle
             srcNode.calcPhasors()
         end
 
+
+        % adding brake to line
+        function insertNode(this, line_id, xi, new_node_id, new_node_load)
+            
+           % init new node
+           addNode(this, new_node_id, new_node_load) 
+           new_node = find_node(this, new_node_id);
+           
+           % find line with enter line_id 
+           temp_line = find_line(this, line_id);
+           
+           % delete parent line of node
+           old_out_node_id = temp_line.node_out.id;
+           temp_line.node_out.line_p = []; 
+                      
+           % set found line new L and node_out and id
+           L = temp_line.L;
+           temp_line.L = L * xi;
+           temp_line.node_out = new_node;
+           temp_line.id = [line_id , '_1'];
+           
+           new_L = (1-xi)*L;
+           new_line_id = [line_id , '_2'];
+           addLine(this, new_line_id, new_node_id, old_out_node_id, new_L, temp_line.W);
+           
+           new_node.line_p = temp_line;
+
+        end
+
+
+        % adding brake to line
+        function insertFold(this, line_id, xi, vec_l)
+
+%            [ab, ac, ag, bc, bg, cg] 
+           load = [sum(vec_l([3, 1, 2])), -vec_l(1), -vec_l(2);...
+                   -vec_l(1), sum(vec_l([5, 1, 4])), -vec_l(4);...
+                   -vec_l(2), -vec_l(4), sum(vec_l([6, 4, 2]))];
+
+           hash_str = sprintf('%d', load);
+           hash_str = [hash_str, line_id, num2str(xi)];
+           hash = string2hash(hash_str);
+            
+           % insert new node
+           insertNode(this, line_id, xi, hash, load)
+           
+           % hash func
+           function hash = string2hash(string)
+               persistent md
+               if isempty(md)
+                   md = java.security.MessageDigest.getInstance('SHA-256');
+               end
+               hash = sprintf('%2.2x', typecast(md.digest(uint8(string)), 'uint8')');
+           end
+
+        end
         
     end
     

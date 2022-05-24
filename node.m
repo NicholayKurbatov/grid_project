@@ -67,7 +67,7 @@ classdef node < handle
 
             % load in local node
             sigma_c = this.load;
-
+            
             % all sigma in cildren lines
             for k = 1:numel(this.line_c)
                 c_line = this.line_c{k};
@@ -84,9 +84,9 @@ classdef node < handle
         % calculate phasors along the grid
         function calcPhasors(this)
            
-            for k=1:length(this.line_c)
+            for k = 1:length(this.line_c)
                 
-                this.line_c{k}.I_in = this.I;
+                this.line_c{k}.I_in = this.line_c{k}.sigma_in * this.U;
                 this.line_c{k}.U_in = this.U;
                 this.line_c{k}.calcPhasors();
 

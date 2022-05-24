@@ -1,4 +1,3 @@
-tic
 clear all, clc
 
 
@@ -29,9 +28,9 @@ src_Zn = 1e6;
 nGrid = Grid();
 nGrid.addNode('srcNode'); % source node
 nGrid.addNode('intN_1'); % internal node
-nGrid.addNode('Load_1',load_1); % load node
+nGrid.addNode('Load_1', load_1); % load node
 nGrid.addNode('intN_2'); % internal node
-nGrid.addNode('Load_2',load_2); % load node
+nGrid.addNode('Load_2', load_2); % load node
 nGrid.addLine('Line_1', 'srcNode', 'intN_1', length_1, line_W);
 nGrid.addLine('Line_2',  'intN_1', 'Load_1', length_2, line_W);
 nGrid.addLine('Line_3',  'intN_1', 'intN_2', length_3, line_W);
@@ -50,7 +49,30 @@ for k = 1:numel(nGrid.nodes)
     resPhasors(k).U = nGrid.nodes{k}.U;
     resPhasors(k).I = nGrid.nodes{k}.I;
 end
-toc
 
 % Save coolected phasors
-save('testResults.mat', 'resPhasors', '-v7');
+save('testResults_insert_before.mat', 'resPhasors', '-v7');
+
+disp('-------------')
+
+test_load = 4*eye(3) - ones(3, 3);
+
+% insert node
+% nGrid.insertNode('Line_1', 0.5, 'indN_1-1/2', test_load);
+nGrid.insertFold('Line_1', 0.5, ones(1, 6))
+
+% Call phasors calculations
+nGrid.calcPhasors();
+
+% Collect nodes phasors
+resPhasors_ins = [];
+for k = 1:numel(nGrid.nodes)
+    resPhasors_ins(k).nodeID = nGrid.nodes{k}.id;
+    resPhasors_ins(k).U = nGrid.nodes{k}.U;
+    resPhasors_ins(k).I = nGrid.nodes{k}.I;
+end
+
+% Save coolected phasors
+save('testResults_insert_after.mat', 'resPhasors', '-v7');
+
+
